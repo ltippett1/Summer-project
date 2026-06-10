@@ -29,6 +29,9 @@ let pipe_y = 0;
 let top_pipe_img;
 let bottom_pipe_img;
 
+//game physics
+let velocity_x = -2; //pipe moving left speed
+
 window.onload = function() {
     board = document.getElementById("board");
     board.height = board_height;
@@ -60,8 +63,45 @@ function update() {
 
     //bird
     context.drawImage(bird_image, bird_x, bird_y, bird_width, bird_height);
+
+    //pipes
+    for (let i = 0; i < pipe_array.length; i++) {
+        let pipe = pipe_array[i];
+        pipe.x += velocity_x;
+        context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+    }
+
+
+
 }
 
 function place_pipes() {
 
+    //(0-1) * pipe_height/2
+    // 0 -> -128 (pipe_height/4)
+    // 1 -> -128 - 256 (pipe_height/4 - pipe_height/2) = -3/4 pipe_height
+    let random_pipe_y = pipe_y - pipe_height / 4 - Math.random() * (pipe_height / 2);
+    let opening_space = board_height / 4;
+
+    let top_pipe = {
+        img : top_pipe_img,
+        x : pipe_x,
+        y : random_pipe_y,
+        width : pipe_width,
+        height : pipe_height,
+        passed : false
+    }
+
+    pipe_array.push(top_pipe);
+
+        let bottom_pipe = {
+        img : bottom_pipe_img,
+        x : pipe_x,
+        y : random_pipe_y + pipe_height + opening_space,
+        width : pipe_width,
+        height : pipe_height,
+        passed : false
+    }
+    
+    pipe_array.push(bottom_pipe);
 }
