@@ -99,7 +99,7 @@ function update() {
     }
 
     //clear pipes
-    while (pipe_array.length > 0 && pipe_array[0].x < 0) {
+    while (pipe_array.length > 0 && pipe_array[0].x < -pipe_width) {
         pipe_array.shift(); //removes first element from array
     }
 
@@ -107,6 +107,10 @@ function update() {
     context.fillStyle = "white";
     context.font = "45px sans-serif";
     context.fillText(score, 5, 45);
+
+    if (game_over) {
+        context.fillText("GAME OVER!", 5, 90);
+    }
 }
 
 function place_pipes() {
@@ -147,6 +151,15 @@ function move_bird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
         //jump
         velocity_y = -6;
+
+        //reset game
+            //restore back to default start
+        if (game_over) {
+            bird.y = bird_y;
+            pipe_array = [];
+            score = 0;
+            game_over = false;
+        }
     }
 }
 
