@@ -1,6 +1,65 @@
 body {
     font-family: 'Courier New', Courier, monospace;
     text-align: center;
+    margin: 0;
+}
+
+#game-container {
+    position: relative;
+    width: 360px;
+    height: 640px;
+    margin: auto;
+}
+
+#board {
+    width: 360px;
+    height: 640px;
+    background-image: url("../images/background.png");
+    background-size: cover;
+    display: block;
+}
+
+#level-select {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+#level-select h1 {
+    color: white;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+#level-select h2 {
+    color: white;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+#level-select button {
+    width: 180px;
+    padding: 12px;
+    margin: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 3px solid white;
+    border-radius: 10px;
+    background-color: #4CAF50;
+    color: white;
+}
+
+#level-select button:hover {
+    background-color: #45a049;
 }
 
 #board {

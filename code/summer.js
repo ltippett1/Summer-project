@@ -39,6 +39,7 @@ let score = 0;
 
 //level
 let level = "easy";
+let game_started = false;
 
 let easy_gap = 220;
 let medium_gap = 170;
@@ -65,9 +66,32 @@ window.onload = function() {
     bottom_pipe_img = new Image();
     bottom_pipe_img.src = "../images/bottompipe.png";
 
+    document.addEventListener("keydown", move_bird);
+
+    //Select level
+    document.getElementById("easy-button").addEventListener("click", function() {
+        level = "easy";
+        start_game()
+    });
+
+    document.getElementById("medium-button").addEventListener("click", function() {
+        level = "medium";
+        start_game()
+    });
+
+    document.getElementById("hard-button").addEventListener("click", function() {
+        level = "hard";
+        start_game()
+    });
+}
+
+function start_game() {
+    document.getElementById("level-select").style.display = "none";
+
+    game_started = true;
+
     requestAnimationFrame(update);
     setInterval(place_pipes, 1500); //every 1.5 seconds
-    document.addEventListener("keydown", move_bird);
 }
 
 function update() {
