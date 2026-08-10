@@ -37,6 +37,13 @@ let gravity = 0.4; //bring bird down
 let game_over = false;
 let score = 0;
 
+//level
+let level = "easy";
+
+let easy_gap = 220;
+let medium_gap = 170;
+let hard_gap = 120;
+
 window.onload = function() {
     board = document.getElementById("board");
     board.height = board_height;
@@ -122,7 +129,16 @@ function place_pipes() {
     // 0 -> -128 (pipe_height/4)
     // 1 -> -128 - 256 (pipe_height/4 - pipe_height/2) = -3/4 pipe_height
     let random_pipe_y = pipe_y - pipe_height / 4 - Math.random() * (pipe_height / 2);
-    let opening_space = board_height / 4;
+    
+    let opening_space;
+
+    if (level === "easy") {
+        opening_space = easy_gap;
+    } else if (level === "medium") {
+        opening_space= medium_gap;
+    } else if (level === "hard") {
+        opening_space = hard_gap;
+    }
 
     let top_pipe = {
         img : top_pipe_img,
@@ -131,18 +147,18 @@ function place_pipes() {
         width : pipe_width,
         height : pipe_height,
         passed : false
-    }
+    };
 
     pipe_array.push(top_pipe);
 
-        let bottom_pipe = {
+    let bottom_pipe = {
         img : bottom_pipe_img,
         x : pipe_x,
         y : random_pipe_y + pipe_height + opening_space,
         width : pipe_width,
         height : pipe_height,
         passed : false
-    }
+    };
     
     pipe_array.push(bottom_pipe);
 }
@@ -160,7 +176,7 @@ function move_bird(e) {
             score = 0;
             game_over = false;
         }
-    }
+     }
 }
 
 function detect_collision (a, b) {
@@ -168,4 +184,4 @@ function detect_collision (a, b) {
             a.x + a.width > b.x &&
             a.y < b.y + b.height &&
             a.y + a.height > b.y
-}
+} 
