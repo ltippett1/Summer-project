@@ -249,10 +249,15 @@ function place_pipes() {
     
     pipe_array.push(bottom_pipe);
 
+    //random position between coins inside the pipe gap
+    let coin_y = random_pipe_y + pipe_height;
+
+    coin_y += Math.random() * (opening_space - coin_height);
+
     let coin = {
         img : coin_img,
         x : pipe_x + pipe_width / 2 - coin_width / 2,
-        y : random_pipe_y + pipe_height + (opening_space / 2) - coin_height / 2,
+        y : coin_y,
         width : coin_width,
         height : coin_height,
         collected : false
