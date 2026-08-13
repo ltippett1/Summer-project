@@ -50,6 +50,12 @@ let hard_gap = 120;
 //score values
 let pipe_score = 1;
 let coin_score = 2;
+let easy_high_score = localStorage.getItem("easy_high_score") || 0;
+let medium_high_score = localStorage.getItem("medium_high_score") || 0;
+let hard_high_score = localStorage.getItem("hard_high_score") || 0;
+
+let pipes_passed = 0;
+let coins_collected = 0;
 
 //restart
 let game_loop_started = false;
@@ -63,9 +69,14 @@ let coin_width = 32;
 let coin_height = 32;
 
 window.onload = function() {
+    document.getElementById("easy-high-score").textContent = easy_high_score;
+    document.getElementById("medium-high-score").textContent = medium_high_score;
+    document.getElementById("hard-high-score").textContent = hard_high_score;
+
     board = document.getElementById("board");
     board.height = board_height;
     board.width = board_width;
+
     //Draw on the board
     context = board.getContext("2d");
 
@@ -134,10 +145,13 @@ function start_game() {
     waiting_to_start = true;
 
     pipe_array = [];
+    coin_array = [];
     score = 0;
     bird_y = board_height / 2;
     bird.y = bird_y;
     velocity_y = 0;
+    pipes_passed = 0;
+    coins_collected = 0;
 
     clearInterval(pipe_interval);
     
@@ -177,6 +191,7 @@ function update() {
     
         if (!pipe.passed && pipe.y < 0 && bird.x > pipe.x + pipe_width) {
             score += pipe_score;
+            pipes_passed++;
             pipe.passed = true;
         }
 
@@ -207,6 +222,7 @@ function update() {
 
         if (!coin.collected && detect_collision(bird, coin)) {
             score += coin_score;
+            coins_collected++;
             coin.collected = true;
         }
     }
@@ -303,7 +319,46 @@ function detect_collision (a, b) {
 } 
 
 function show_game_over() {
+
+    let current_high_score;
+
+    if (level === "easy") {
+        current_high_score = easy_high_score;
+    } else if (level === "medium") {
+        current_high_score = medium_high_score;
+    } else if (level === "hard") {
+        current_high_score = hard_high_score;
+    }
+
+    //Check to see if new score is greater than high score
+    if (score > current_high_score) {
+        current_high_scorehigh_score = score;
+
+        //Save new high score
+    if (level === "easy") {
+        easy_high_score = score;
+        localStorage.setItem("easy_high_score", easy_high_score);
+    } else if (level === "medium") {
+        medium_high_score = score;
+        localStorage.setItem("medium_high_score", medium_high_score);
+    } else if (level === "hard") {
+        hard_high_score = score;
+        localStorage.setItem("hard_high_score", hard_high_score);
+    }
+
+        //Update high score on start menu
+        document.getElementById("easy-high-score").textContent = easy_high_score;
+        document.getElementById("medium-high-score").textContent = medium_high_score;
+        document.getElementById("hard-high-score").textContent = hard_high_score;
+    }
+
+    //Show scores
     document.getElementById("final-score").textContent = score;
+    document.getElementById("game-over-high-score").textContent = current_high_score;
+
+    document.getElementById("pipes-passed").textContent = pipes_passed;
+    document.getElementById("coins-collected").textContent = coins_collected;    
+
     document.getElementById("game-over").style.display = "flex";
 }
 
@@ -320,6 +375,8 @@ function restart_game() {
     game_over = false;
     game_started = true;
     waiting_to_start = true;
+    pipes_passed = 0;
+    coins_collected = 0;
 
     clearInterval(pipe_interval);
 }
@@ -337,6 +394,8 @@ function choose_new_level() {
     score = 0;
     game_over = true;
     game_started = false;
+    pipes_passed = 0;
+    coins_collected = 0;
 
     clearInterval(pipe_interval);
 }

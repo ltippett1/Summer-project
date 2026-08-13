@@ -44,6 +44,12 @@ body {
     margin-bottom: 20px;
 }
 
+#level-select p {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
 #level-select button {
     width: 180px;
     padding: 12px;
