@@ -29,6 +29,8 @@ let pipe_y = 0;
 let top_pipe_img;
 let bottom_pipe_img;
 
+let pipe_interval;
+
 //game physics
 let velocity_x = -2; //pipe moving left speed
 let velocity_y = 0; //bird jump speed
@@ -44,6 +46,9 @@ let game_started = false;
 let easy_gap = 220;
 let medium_gap = 170;
 let hard_gap = 120;
+
+//restart
+let game_loop_started = false;
 
 window.onload = function() {
     board = document.getElementById("board");
@@ -83,15 +88,36 @@ window.onload = function() {
         level = "hard";
         start_game()
     });
+
+    document.getElementById("restart-button").addEventListener("click", function() {
+        restart_game();
+    });
+
+    document.getElementById("new-level-button").addEventListener("click", function() {
+        choose_new_level();
+    })
 }
 
 function start_game() {
     document.getElementById("level-select").style.display = "none";
+    document.getElementById("game-over").style.display = "none";
 
     game_started = true;
+    game_over = false;
 
-    requestAnimationFrame(update);
-    setInterval(place_pipes, 1500); //every 1.5 seconds
+    pipe_array = [];
+    score = 0;
+    bird_y = board_height / 2;
+    bird.y = bird_y;
+    velocity_y = 0;
+
+    clearInterval(pipe_interval);
+    pipe_interval = setInterval(place_pipes, 1500); //every 1.5 seconds
+
+    if (!game_loop_started) {
+        game_loop_started = true;
+        requestAnimationFrame(update);
+}
 }
 
 function update() {
@@ -109,8 +135,9 @@ function update() {
     
     context.drawImage(bird_image, bird_x, bird_y, bird_width, bird_height);
 
-    if (bird_y > board_height) {
+    if (bird_y + bird_height > board_height) {
         game_over = true;
+        show_game_over();
     }
 
     //pipes
@@ -126,6 +153,7 @@ function update() {
 
         if (detect_collision(bird, pipe)) {
             game_over = true;
+            show_game_over();
         }
     }
 
@@ -138,10 +166,6 @@ function update() {
     context.fillStyle = "white";
     context.font = "45px sans-serif";
     context.fillText(score, 5, 45);
-
-    if (game_over) {
-        context.fillText("GAME OVER!", 5, 90);
-    }
 }
 
 function place_pipes() {
@@ -191,15 +215,6 @@ function move_bird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
         //jump
         velocity_y = -6;
-
-        //reset game
-            //restore back to default start
-        if (game_over) {
-            bird.y = bird_y;
-            pipe_array = [];
-            score = 0;
-            game_over = false;
-        }
      }
 }
 
@@ -209,3 +224,37 @@ function detect_collision (a, b) {
             a.y < b.y + b.height &&
             a.y + a.height > b.y
 } 
+
+function show_game_over() {
+    document.getElementById("final-score").textContent = score;
+    document.getElementById("game-over").style.display = "flex";
+}
+
+function restart_game() {
+    document.getElementById("game-over").style.display = "none";
+
+    bird_y = board_height / 2;
+    bird.y = bird_y;
+
+    velocity_y = 0;
+    pipe_array = [];
+    score = 0;
+    game_over = false;
+    game_started = true;
+}
+
+function choose_new_level() {
+    document.getElementById("game-over").style.display = "none";
+    document.getElementById("level-select").style.display = "flex";
+
+    bird_y = board_height / 2;
+    bird.y = bird_y;
+
+    velocity_y = 0;
+    pipe_array = [];
+    score = 0;
+    game_over = true;
+    game_started = false;
+
+    clearInterval(pipe_interval);
+}

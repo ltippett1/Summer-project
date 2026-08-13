@@ -10,6 +10,7 @@
 <body>
     <div id="game-container">
 
+<!--This will allow users to select their difficulty-->
         <div id="level-select">
             <h1>Game Name</h1>
             <h2>Choose Difficulty</h2>
@@ -19,6 +20,16 @@
             <button id="hard-button">Hard</button>
         </div>
 
+<!--This will allow users to restart the game or choose difficulty-->
+        <div id="game-over">
+            <h1>GAME OVER!</h1>
+            <h2>Score: <span id="final-score">0</span></h2>
+
+            <button id="restart-button">Restart</button>
+            <button id="new-level-button">Choose Difficulty</button>
+        </div>
+
+<!--Print the game onto the screen-->
         <canvas id="board"></canvas>
 
     </div>
