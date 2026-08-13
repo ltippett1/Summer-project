@@ -97,6 +97,12 @@ body {
     margin-bottom: 20px;
 }
 
+#game-over p {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
 #game-over button {
     width: 180px;
     padding: 12px;
