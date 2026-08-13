@@ -50,6 +50,8 @@ let hard_gap = 120;
 //restart
 let game_loop_started = false;
 
+let waiting_to_start = false;
+
 window.onload = function() {
     board = document.getElementById("board");
     board.height = board_height;
@@ -104,6 +106,7 @@ function start_game() {
 
     game_started = true;
     game_over = false;
+    waiting_to_start = true;
 
     pipe_array = [];
     score = 0;
@@ -112,8 +115,7 @@ function start_game() {
     velocity_y = 0;
 
     clearInterval(pipe_interval);
-    pipe_interval = setInterval(place_pipes, 1500); //every 1.5 seconds
-
+    
     if (!game_loop_started) {
         game_loop_started = true;
         requestAnimationFrame(update);
@@ -128,8 +130,10 @@ function update() {
     context.clearRect(0, 0, board_width, board_height);
 
     //bird
-    velocity_y += gravity;
-    bird_y = Math.max(bird_y + velocity_y, 0); //apply gravity to current bird_y, limit the bird_y to the top of the canvas
+    if (!waiting_to_start) {
+        velocity_y += gravity;
+        bird_y = Math.max(bird_y + velocity_y, 0); //apply gravity to current bird_y, limit the bird_y to the top of the canvas
+    }
     
     bird.y = bird_y;
     
@@ -213,7 +217,13 @@ function place_pipes() {
 
 function move_bird(e) {
     if (e.code == "Space" || e.code == "ArrowUp" || e.code == "KeyX") {
-        //jump
+
+        if (waiting_to_start) {
+            waiting_to_start = false;
+
+            pipe_interval = setInterval(place_pipes, 1500);
+        }
+
         velocity_y = -6;
      }
 }
@@ -241,6 +251,9 @@ function restart_game() {
     score = 0;
     game_over = false;
     game_started = true;
+    waiting_to_start = true;
+
+    clearInterval(pipe_interval);
 }
 
 function choose_new_level() {
