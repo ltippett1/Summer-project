@@ -47,6 +47,10 @@ let easy_gap = 220;
 let medium_gap = 170;
 let hard_gap = 120;
 
+//score values
+let pipe_score = 1;
+let coin_score = 2;
+
 //restart
 let game_loop_started = false;
 
@@ -110,6 +114,18 @@ window.onload = function() {
 }
 
 function start_game() {
+
+    if (level === "easy") {
+        pipe_score = 1;
+        coin_score = 2;
+    } else if (level === "medium") {
+        pipe_score = 2;
+        coin_score = 3;       
+    } else if (level === "hard") {
+        pipe_score = 3;
+        coin_score = 5;
+    }
+
     document.getElementById("level-select").style.display = "none";
     document.getElementById("game-over").style.display = "none";
 
@@ -159,8 +175,8 @@ function update() {
         pipe.x += velocity_x;
         context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
     
-        if (!pipe.passed && bird.x > pipe.x + pipe_width) {
-            score += 0.5; //0.5 because there are 2 pipes.
+        if (!pipe.passed && pipe.y < 0 && bird.x > pipe.x + pipe_width) {
+            score += pipe_score;
             pipe.passed = true;
         }
 
@@ -190,7 +206,7 @@ function update() {
         );
 
         if (!coin.collected && detect_collision(bird, coin)) {
-            score += 1;
+            score += coin_score;
             coin.collected = true;
         }
     }
