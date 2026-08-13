@@ -52,6 +52,12 @@ let game_loop_started = false;
 
 let waiting_to_start = false;
 
+//coin
+let coin_img;
+let coin_array = [];
+let coin_width = 32;
+let coin_height = 32;
+
 window.onload = function() {
     board = document.getElementById("board");
     board.height = board_height;
@@ -72,6 +78,9 @@ window.onload = function() {
 
     bottom_pipe_img = new Image();
     bottom_pipe_img.src = "../images/bottompipe.png";
+
+    coin_img = new Image();
+    coin_img.src = "../images/coin.png";
 
     document.addEventListener("keydown", move_bird);
 
@@ -134,7 +143,7 @@ function update() {
         velocity_y += gravity;
         bird_y = Math.max(bird_y + velocity_y, 0); //apply gravity to current bird_y, limit the bird_y to the top of the canvas
     }
-    
+
     bird.y = bird_y;
     
     context.drawImage(bird_image, bird_x, bird_y, bird_width, bird_height);
@@ -165,6 +174,32 @@ function update() {
     while (pipe_array.length > 0 && pipe_array[0].x < -pipe_width) {
         pipe_array.shift(); //removes first element from array
     }
+
+    //coins
+    for (let i = 0; i < coin_array.length; i++) {
+        let coin = coin_array[i];
+
+        coin.x += velocity_x;
+
+        context.drawImage(
+            coin.img,
+            coin.x,
+            coin.y,
+            coin.width,
+            coin.height
+        );
+
+        if (!coin.collected && detect_collision(bird, coin)) {
+            score += 1;
+            coin.collected = true;
+        }
+    }
+
+    //clear coin
+    while (coin_array.length > 0 &&
+        (coin_array[0].x < -coin_width || coin_array[0].collected)) {
+            coin_array.shift();
+        }
 
     //score
     context.fillStyle = "white";
@@ -213,6 +248,17 @@ function place_pipes() {
     };
     
     pipe_array.push(bottom_pipe);
+
+    let coin = {
+        img : coin_img,
+        x : pipe_x + pipe_width / 2 - coin_width / 2,
+        y : random_pipe_y + pipe_height + (opening_space / 2) - coin_height / 2,
+        width : coin_width,
+        height : coin_height,
+        collected : false
+    };
+
+    coin_array.push(coin);
 }
 
 function move_bird(e) {
@@ -248,6 +294,7 @@ function restart_game() {
 
     velocity_y = 0;
     pipe_array = [];
+    coin_array = [];
     score = 0;
     game_over = false;
     game_started = true;
@@ -265,6 +312,7 @@ function choose_new_level() {
 
     velocity_y = 0;
     pipe_array = [];
+    coin_array = [];
     score = 0;
     game_over = true;
     game_started = false;
