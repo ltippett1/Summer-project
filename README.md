@@ -32,3 +32,6 @@ Users can control the bird using spacebar and they need to fly through the pipes
 - JavaScript
 - HTML Canvas
 - Local Storage
+
+## Video Reference
+https://www.youtube.com/watch?v=jj5ADM2uywg - was used to help make the basic flappy bird game
